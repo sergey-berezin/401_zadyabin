@@ -1,0 +1,14 @@
+﻿<Window x:Class="SecondTask.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SecondTask"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button x:Name="ChooseDirectoryButton" Content="Choose directory" HorizontalAlignment="Left" Margin="161,47,0,0" VerticalAlignment="Top" Height="24" Width="102" Click="ChooseDirectoryButton_Click"/>
+        <TextBlock x:Name="PathTextBlock" HorizontalAlignment="Left" Margin="32,47,0,0" Text="Path to folder" TextWrapping="Wrap" VerticalAlignment="Top" Width="114"/>
+
+    </Grid>
+</Window>
