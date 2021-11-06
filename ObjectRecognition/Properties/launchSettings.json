@@ -1,7 +1,8 @@
 {
   "profiles": {
     "ObjectRecognition": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\zilya\\Downloads\\401_zadyabin-first_task\\ObjectRecognition\\Assets\\Images"
     }
   }
 }
