@@ -9,6 +9,13 @@
     <Grid>
         <Button x:Name="ChooseDirectoryButton" Content="Choose directory" HorizontalAlignment="Left" Margin="161,47,0,0" VerticalAlignment="Top" Height="24" Width="102" Click="ChooseDirectoryButton_Click"/>
         <TextBlock x:Name="PathTextBlock" HorizontalAlignment="Left" Margin="32,47,0,0" Text="Path to folder" TextWrapping="Wrap" VerticalAlignment="Top" Width="114"/>
+        <ListView x:Name="ListOfImages" HorizontalAlignment="Left" Height="317" Margin="411,28,0,0" VerticalAlignment="Top" Width="354" SelectionChanged="ListOfImages_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
     </Grid>
 </Window>

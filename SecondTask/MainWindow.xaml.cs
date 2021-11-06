@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace SecondTask
     public partial class MainWindow : Window
     {
         System.Windows.Forms.DialogResult observedDirectory;
+        String[] images;
         public MainWindow()
         {
             InitializeComponent();
@@ -35,8 +37,20 @@ namespace SecondTask
                 if (result.ToString() != string.Empty)
                 {
                     PathTextBlock.Text = dialog.SelectedPath;
+
+                    var dirInfo = new DirectoryInfo(dialog.SelectedPath);
+
+                    FileInfo[] info = dirInfo.GetFiles("*.*", SearchOption.AllDirectories);
+                    var targetList = info
+                                 .Select(x => ListOfImages.Items.Add(x.Name)).ToList();
+                     
                 }
             }
+        }
+
+        private void ListOfImages_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

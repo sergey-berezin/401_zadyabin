@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -12,12 +13,12 @@ namespace ObjectRecognitionLibrary
     public static class ObjectRecognitionLibrary
     {
         private static readonly object outputLock = new object();
-        public static void AnalyseFolder(this string imageFolder)
+        public static void AnalyseFolder(string imageFolder, BlockingCollection<ImageData> output, 
+            CancellationToken cancellationToken)
         {
             if (imageFolder.Length > 0)
             {
-                Console.WriteLine("Type ctrl+c to stop all threads");
-                float progress = 0;
+                //float progress = 0;
 
                 string[] imagePaths = Directory
                     .GetFiles(imageFolder);
@@ -26,18 +27,10 @@ namespace ObjectRecognitionLibrary
 
                 var model = new Model();
 
-                CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-                CancellationToken token = cancelTokenSource.Token;
-
-                Console.CancelKeyPress += (s, ev) =>
-                {
-                    cancelTokenSource.Cancel();
-                    ev.Cancel = true;
-                };
-
                 try
                 {
-                    Parallel.ForEach(imagePaths, new ParallelOptions { CancellationToken = token }, imagePath =>
+                    Parallel.ForEach(imagePaths, new ParallelOptions { CancellationToken = cancellationToken }, 
+                        imagePath =>
                     {
                         var imageName = Path.GetFileName(imagePath);
                         var bitmap = new Bitmap(Image.FromFile(imagePath));
@@ -47,37 +40,25 @@ namespace ObjectRecognitionLibrary
 
                         lock (outputLock)
                         {
-                            progress++;
-                            Console.WriteLine($"Progress is {progress / imagesAmount * 100} %\n");
-                            LogDetectedObjects(imageName, results);
+                            //progress++;
+                            //Console.WriteLine($"Progress is {progress / imagesAmount * 100} %\n");
+                            output.Add(new ImageData(imagePath, results));
+                            //LogDetectedObjects(imageName, results, output);
                         }
                     }
                    );
                 }
                 catch (OperationCanceledException)
                 {
+                    output.CompleteAdding();
                     Console.WriteLine("Operation was canceled");
-                }
-                finally
-                {
-                    cancelTokenSource.Dispose();
                 }
             } 
             else
             {
                 Console.WriteLine("Folder was not specified");
             }
+            output.CompleteAdding();
         }
-
-        private static void LogDetectedObjects(string imageName, IReadOnlyList<YoloV4Result> boundingBoxes)
-        {
-            Console.WriteLine($".....The objects in the image {imageName} are detected as below....");
-            foreach (var box in boundingBoxes)
-            {
-                Console.WriteLine($"{box.Label} and its Confidence score: {box.Confidence}");
-            }
-            Console.WriteLine("");
-        }
-
     }
 }
