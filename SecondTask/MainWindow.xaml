@@ -5,17 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SecondTask"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="1000" Width="1700">
     <Grid>
         <Button x:Name="ChooseDirectoryButton" Content="Choose directory" HorizontalAlignment="Left" Margin="161,47,0,0" VerticalAlignment="Top" Height="24" Width="102" Click="ChooseDirectoryButton_Click"/>
         <TextBlock x:Name="PathTextBlock" HorizontalAlignment="Left" Margin="32,47,0,0" Text="Path to folder" TextWrapping="Wrap" VerticalAlignment="Top" Width="114"/>
-        <ListView x:Name="ListOfImages" HorizontalAlignment="Left" Height="317" Margin="411,28,0,0" VerticalAlignment="Top" Width="354" SelectionChanged="ListOfImages_SelectionChanged">
+        <ListView x:Name="ListOfImages" HorizontalAlignment="Left" Height="107" Margin="460,10,0,0" VerticalAlignment="Top" Width="307" SelectionChanged="ListOfImages_SelectionChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
                 </GridView>
             </ListView.View>
         </ListView>
+
+        <ListBox Name="Thumbnails" ItemsSource="{Binding Images}" Margin="0,166,0,0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding}"></Image>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Image x:Name="imagePlaceholder" HorizontalAlignment="Left" Height="100" Margin="938,47,0,0" VerticalAlignment="Top" Width="320"/>
 
     </Grid>
 </Window>

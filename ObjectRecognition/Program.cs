@@ -26,7 +26,8 @@ namespace ObjectRecognition
                 Console.WriteLine("Type ctrl+c to stop all threads");
                 var results = new BlockingCollection<ImageData>();
                 
-                Task.Run(() => ObjectRecognitionLibrary.ObjectRecognitionLibrary.AnalyseFolder(args[0], results, token));
+                Task.Factory.StartNew(() => ObjectRecognitionLibrary.ObjectRecognitionLibrary.AnalyseFolder(args[0], results, token), 
+                    TaskCreationOptions.LongRunning);
                 
                 ImageData imageData;
                 while (!results.IsCompleted)
