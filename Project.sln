@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObjectRecognitionLibrary", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObjectRecognition", "ObjectRecognition\ObjectRecognition.csproj", "{B36EE8EC-3D97-475B-9C0B-4E3201E1C08E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecondTask", "SecondTask\SecondTask.csproj", "{A8770A70-E4AD-4720-84AB-0CB3AF32C401}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecondTask", "SecondTask\SecondTask.csproj", "{A8770A70-E4AD-4720-84AB-0CB3AF32C401}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

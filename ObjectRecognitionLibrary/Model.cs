@@ -28,7 +28,6 @@ namespace ObjectRecognitionLibrary
             var buildDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var modelPath = buildDir + @"\Models\yolov4.onnx";
 
-
             MLContext mlContext = new MLContext();
 
             var pipeline = mlContext.Transforms.ResizeImages(inputColumnName: "bitmap", outputColumnName: "input_1:0", imageWidth: 416, imageHeight: 416, resizing: ResizingKind.IsoPad)
@@ -63,16 +62,5 @@ namespace ObjectRecognitionLibrary
             enginePool.Release(engine);
             return predict.GetResults(classesNames, 0.3f, 0.7f);
         }
-        public static string GetAbsolutePath(string relativePath)
-        {
-            FileInfo _dataRoot = new FileInfo(typeof(ObjectRecognitionLibrary).Assembly.Location);
-            string assemblyFolderPath = _dataRoot.Directory.FullName;
-
-            string fullPath = Path.Combine(assemblyFolderPath, relativePath);
-
-            return fullPath;
-        }
-
     }
-
 }

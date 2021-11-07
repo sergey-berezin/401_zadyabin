@@ -22,15 +22,6 @@ namespace ObjectRecognitionLibrary
                 g.DrawString(res.Label + " " + res.Confidence.ToString("0.00"),
                              new Font("Arial", 12), Brushes.Blue, new PointF(x1, y1));
             }
-
-            //var buildDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            //var imageOutputFolder = buildDir + @"\Output";
-            //if (!Directory.Exists(imageOutputFolder))
-            //{
-            //    Directory.CreateDirectory(imageOutputFolder);
-            //}
-            //var filename = Path.Combine(imageOutputFolder, Path.ChangeExtension(imageName, "_processed" + Path.GetExtension(imageName)));
-            //bitmap.Save(filename);
             return bitmap;
         }
     }
