@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Reflection;
 using ObjectRecognitionLibrary.DataStructures;
+
 
 namespace ObjectRecognitionLibrary
 {
     public class ObjectRectangles
     {
-        public static void Draw(Bitmap bitmap, IReadOnlyList<YoloV4Result> results, string imageName)
+        public static Bitmap Draw(Bitmap bitmap, IReadOnlyList<YoloV4Result> results)
         {
             var g = Graphics.FromImage(bitmap);
 
@@ -24,14 +23,15 @@ namespace ObjectRecognitionLibrary
                              new Font("Arial", 12), Brushes.Blue, new PointF(x1, y1));
             }
 
-            var buildDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var imageOutputFolder = buildDir + @"\Output";
-            if (!Directory.Exists(imageOutputFolder))
-            {
-                Directory.CreateDirectory(imageOutputFolder);
-            }
-            var filename = Path.Combine(imageOutputFolder, Path.ChangeExtension(imageName, "_processed" + Path.GetExtension(imageName)));
-            bitmap.Save(filename);
+            //var buildDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            //var imageOutputFolder = buildDir + @"\Output";
+            //if (!Directory.Exists(imageOutputFolder))
+            //{
+            //    Directory.CreateDirectory(imageOutputFolder);
+            //}
+            //var filename = Path.Combine(imageOutputFolder, Path.ChangeExtension(imageName, "_processed" + Path.GetExtension(imageName)));
+            //bitmap.Save(filename);
+            return bitmap;
         }
     }
 }

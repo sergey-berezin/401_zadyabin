@@ -9,13 +9,6 @@
     <Grid>
         <Button x:Name="ChooseDirectoryButton" Content="Choose directory" HorizontalAlignment="Left" Margin="161,47,0,0" VerticalAlignment="Top" Height="24" Width="102" Click="ChooseDirectoryButton_Click"/>
         <TextBlock x:Name="PathTextBlock" HorizontalAlignment="Left" Margin="32,47,0,0" Text="Path to folder" TextWrapping="Wrap" VerticalAlignment="Top" Width="114"/>
-        <ListView x:Name="ListOfImages" HorizontalAlignment="Left" Height="107" Margin="460,10,0,0" VerticalAlignment="Top" Width="307" SelectionChanged="ListOfImages_SelectionChanged">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
-        </ListView>
 
         <ListBox Name="Thumbnails" ItemsSource="{Binding Images}" Margin="0,166,0,0">
             <ListBox.ItemTemplate>
@@ -26,7 +19,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Image x:Name="imagePlaceholder" HorizontalAlignment="Left" Height="100" Margin="938,47,0,0" VerticalAlignment="Top" Width="320"/>
+        <Button x:Name="StartObjectRecognitionButton" Content="Start Object Recognition" HorizontalAlignment="Left" Margin="286,49,0,0" VerticalAlignment="Top" Height="22" Width="151" Click="StartObjectRecognitionButton_Click"/>
+        <Button x:Name="StopAnalyzingButton" Content="Stop analyzing" HorizontalAlignment="Left" Margin="494,51,0,0" VerticalAlignment="Top" Height="20" Width="138" Click="StopAnalyzingButton_Click"/>
 
     </Grid>
 </Window>
