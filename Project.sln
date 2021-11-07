@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObjectRecognitionLibrary", "ObjectRecognitionLibrary\ObjectRecognitionLibrary.csproj", "{59D0D6F4-17FD-4D6D-92B0-C3E635DDCD12}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObjectRecognition", "ObjectRecognition\ObjectRecognition.csproj", "{B36EE8EC-3D97-475B-9C0B-4E3201E1C08E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstTask", "ObjectRecognition\FirstTask.csproj", "{B36EE8EC-3D97-475B-9C0B-4E3201E1C08E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecondTask", "SecondTask\SecondTask.csproj", "{A8770A70-E4AD-4720-84AB-0CB3AF32C401}"
 EndProject

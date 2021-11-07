@@ -19,15 +19,15 @@ namespace SecondTask
     ///
     public partial class MainWindow : Window
     {
-        private ObservableCollection<BitmapSource> _images = new ObservableCollection<BitmapSource>();
+        private ObservableCollection<BitmapSource> _images = new();
         private Dictionary<string, int> ImagePathToIndex = new();
 
-        CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancelTokenSource = new();
         CancellationToken token;
 
         public ObservableCollection<BitmapSource> Images
         {
-            get { return this._images; }
+            get { return _images; }
         }
         public MainWindow()
         {
@@ -47,15 +47,13 @@ namespace SecondTask
             var dialog = new System.Windows.Forms.FolderBrowserDialog();
             var result = dialog.ShowDialog();
 
-            if (result.ToString() != string.Empty)
+            if (result.ToString() != string.Empty && dialog.SelectedPath != string.Empty)
             {
                 PathTextBlock.Text = dialog.SelectedPath;
 
                 imagesFolder = dialog.SelectedPath;
 
-                var dirInfo = new DirectoryInfo(dialog.SelectedPath);
-
-                List<FileInfo> info = dirInfo.GetFiles("*.*", SearchOption.AllDirectories).ToList();
+                List<FileInfo> info = new DirectoryInfo(dialog.SelectedPath).GetFiles("*.*", SearchOption.AllDirectories).ToList();
 
                 Images.Clear();
 
