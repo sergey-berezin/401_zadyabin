@@ -16,8 +16,6 @@ namespace ObjectRecognitionLibrary
         {
             if (imageFolder.Length > 0)
             {
-                //float progress = 0;
-
                 string[] imagePaths = Directory
                     .GetFiles(imageFolder);
 
@@ -34,14 +32,11 @@ namespace ObjectRecognitionLibrary
                         var bitmap = new Bitmap(Image.FromFile(imagePath));
 
                         var results = model.PredictionResults(bitmap);
-                        ObjectRectangles.Draw(bitmap, results, imageName);
+                        ObjectRectangles.Draw(bitmap, results);
 
                         lock (outputLock)
                         {
-                            //progress++;
-                            //Console.WriteLine($"Progress is {progress / imagesAmount * 100} %\n");
                             output.Add(new ImageData(imagePath, results));
-                            //LogDetectedObjects(imageName, results, output);
                         }
                     }
                    );
