@@ -10,15 +10,18 @@
         <Button x:Name="ChooseDirectoryButton" Content="Choose directory" HorizontalAlignment="Left" Margin="161,47,0,0" VerticalAlignment="Top" Height="24" Width="102" Click="ChooseDirectoryButton_Click"/>
         <TextBlock x:Name="PathTextBlock" HorizontalAlignment="Left" Margin="32,47,0,0" Text="Path to folder" TextWrapping="Wrap" VerticalAlignment="Top" Width="114"/>
 
-        <ListBox Name="Thumbnails" ItemsSource="{Binding Images}" Margin="0,166,0,0">
-            <ListBox.ItemTemplate>
+        <ItemsControl ItemsSource="{Binding Images}" Margin="10,124,0,0">
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{Binding}"></Image>
-                    </StackPanel>
+                    <Image Source="{Binding}"></Image>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="5"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+        </ItemsControl>
         <Button x:Name="StartObjectRecognitionButton" Content="Start Object Recognition" HorizontalAlignment="Left" Margin="286,49,0,0" VerticalAlignment="Top" Height="22" Width="151" Click="StartObjectRecognitionButton_Click"/>
         <Button x:Name="StopAnalyzingButton" Content="Stop analyzing" HorizontalAlignment="Left" Margin="494,51,0,0" VerticalAlignment="Top" Height="20" Width="138" Click="StopAnalyzingButton_Click"/>
 

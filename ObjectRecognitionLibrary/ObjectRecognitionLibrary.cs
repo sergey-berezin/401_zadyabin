@@ -28,12 +28,9 @@ namespace ObjectRecognitionLibrary
                     Parallel.ForEach(imagePaths, new ParallelOptions { CancellationToken = cancellationToken }, 
                         imagePath =>
                     {
-                        var imageName = Path.GetFileName(imagePath);
                         var bitmap = new Bitmap(Image.FromFile(imagePath));
-
                         var results = model.PredictionResults(bitmap);
-                        ObjectRectangles.Draw(bitmap, results);
-
+                       
                         lock (outputLock)
                         {
                             output.Add(new ImageData(imagePath, results));

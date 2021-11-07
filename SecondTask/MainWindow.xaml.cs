@@ -19,11 +19,8 @@ namespace SecondTask
     ///
     public partial class MainWindow : Window
     {
-
-        // Class defintion should be provided within the namespace being used, outside of any other classes.
-        // These two declarations belong outside of the main page class.
         private ObservableCollection<BitmapSource> _images = new ObservableCollection<BitmapSource>();
-        private Dictionary<String, int> ImagePathToIndex = new();
+        private Dictionary<string, int> ImagePathToIndex = new();
 
         CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
         CancellationToken token;
@@ -60,6 +57,8 @@ namespace SecondTask
 
                 List<FileInfo> info = dirInfo.GetFiles("*.*", SearchOption.AllDirectories).ToList();
 
+                Images.Clear();
+
                 for (int i = 0; i < info.Count; i++)
                 {
                     Images.Add(new BitmapImage(new Uri(info[i].FullName)));
@@ -92,7 +91,6 @@ namespace SecondTask
                         }
                     }
                 });
-               
            }
         }
 
