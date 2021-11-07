@@ -1,11 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Drawing;
 using System.Windows;
 using System.Linq;
 using System.Windows.Media.Imaging;
-using System.Drawing.Imaging;
-using System.Windows.Media;
 using System;
 using System.Collections.Concurrent;
 using ObjectRecognitionLibrary.DataStructures;
@@ -71,26 +68,31 @@ namespace SecondTask
             }
         }
 
-        private async void StartObjectRecognition()
+        private void StartObjectRecognition()
         {
             if (imagesFolder.Length > 0)
             {
                 var results = new BlockingCollection<ImageData>();
 
-                var rt = Task.Factory.StartNew(() => ObjectRecognitionLibrary.ObjectRecognitionLibrary.AnalyseFolder(imagesFolder, results, token),
+                Task.Factory.StartNew(() => ObjectRecognitionLibrary.ObjectRecognitionLibrary.AnalyseFolder(imagesFolder, results, token),
                     TaskCreationOptions.LongRunning);
 
-                ImageData imageData;
-                while (!results.IsCompleted)
-                {
-                    if (results.TryTake(out imageData))
+                Task.Factory.StartNew(() => {
+                    ImageData imageData;
+                    while (!results.IsCompleted)
                     {
-                        var imageIndex = ImagePathToIndex[imageData.imagePath];
-                        var newBitmap = ObjectRectangles.Draw(Helpers.BitmapFromBitmapSource(Images[imageIndex]), imageData.boundingBoxes);
-                        Images[imageIndex] = Helpers.BitmapSourceFromBitmap(newBitmap);
+                        if (results.TryTake(out imageData))
+                        {
+                            var imageIndex = ImagePathToIndex[imageData.imagePath];
+                            var newBitmap = ObjectRectangles.Draw(Helpers.BitmapFromBitmapSource(Images[imageIndex]), imageData.boundingBoxes);
+                            Dispatcher.Invoke(() =>
+                            {
+                                Images[imageIndex] = Helpers.BitmapSourceFromBitmap(newBitmap);
+                            });
+                        }
                     }
-               }
-               await rt;
+                });
+               
            }
         }
 
