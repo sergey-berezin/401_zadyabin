@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ObjectRecognitionLibrary.DataStructures;
 
-namespace ObjectRecognition
+namespace FirstTask
 {
     class Program
     {
@@ -25,7 +25,10 @@ namespace ObjectRecognition
             {
                 Console.WriteLine("Type ctrl+c to stop all threads");
                 var results = new BlockingCollection<ImageData>();
-                
+
+                float progress = 0;
+                int imagesAmount = Directory.GetFiles(args[0]).Length;
+               
                 Task.Factory.StartNew(() => ObjectRecognitionLibrary.ObjectRecognitionLibrary.AnalyseFolder(args[0], results, token), 
                     TaskCreationOptions.LongRunning);
                 
@@ -33,6 +36,8 @@ namespace ObjectRecognition
                 while (!results.IsCompleted)
                 {
                     if (results.TryTake(out imageData)) {
+                        progress++;
+                        Console.WriteLine($"Progress is {progress / imagesAmount * 100} %\n");
                         LogDetectedObjects(Path.GetFileName(imageData.imagePath), imageData.boundingBoxes);
                     }
                 }
