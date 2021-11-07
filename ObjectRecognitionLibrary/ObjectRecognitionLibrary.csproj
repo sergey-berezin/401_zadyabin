@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <Reference Include="System.Windows.Forms">
-      <HintPath>..\..\..\..\Windows\Microsoft.NET\Framework\v2.0.50727\System.Windows.Forms.dll</HintPath>
+      <HintPath>..\Assemblies\System.Windows.Forms.dll</HintPath>
     </Reference>
   </ItemGroup>
 
