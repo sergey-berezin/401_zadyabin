@@ -25,6 +25,9 @@ namespace SecondTask
         CancellationTokenSource cancelTokenSource = new();
         CancellationToken token;
 
+        private bool isAnalyzing = false;
+        private ObjectRecognitionLibrary.ObjectRecognitionLibrary objectRecognitionLibrary = new();
+
         public ObservableCollection<BitmapSource> Images
         {
             get { return _images; }
@@ -38,6 +41,7 @@ namespace SecondTask
         private void StopAnalyzingButton_Click(object sender, RoutedEventArgs e)
         {
             cancelTokenSource.Cancel();
+            isAnalyzing = false;
         }
 
         public string imagesFolder;
@@ -67,11 +71,12 @@ namespace SecondTask
 
         private void StartObjectRecognition()
         {
+            isAnalyzing = true;
             if (imagesFolder.Length > 0)
             {
                 var results = new BlockingCollection<ImageData>();
 
-                Task.Factory.StartNew(() => ObjectRecognitionLibrary.ObjectRecognitionLibrary.AnalyseFolder(imagesFolder, results, token),
+                Task.Factory.StartNew(() => objectRecognitionLibrary.AnalyseFolder(imagesFolder, results, token),
                     TaskCreationOptions.LongRunning);
 
                 Task.Factory.StartNew(() => {
@@ -81,20 +86,25 @@ namespace SecondTask
                         if (results.TryTake(out imageData))
                         {
                             var imageIndex = ImagePathToIndex[imageData.imagePath];
-                            var newBitmap = ObjectRectangles.Draw(Helpers.BitmapFromBitmapSource(Images[imageIndex]), imageData.boundingBoxes);
+                                                       
                             Dispatcher.Invoke(() =>
                             {
+                                var newBitmap = ObjectRectangles.Draw(Helpers.BitmapFromBitmapSource(Images[imageIndex]), imageData.boundingBoxes);
                                 Images[imageIndex] = Helpers.BitmapSourceFromBitmap(newBitmap);
                             });
                         }
                     }
+                    isAnalyzing = false;
                 });
            }
         }
 
         private void StartObjectRecognitionButton_Click(object sender, RoutedEventArgs e)
         {
-            StartObjectRecognition();
+            if (!isAnalyzing)
+            {
+                StartObjectRecognition();
+            }
         }
     }
 }

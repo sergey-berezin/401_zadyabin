@@ -8,10 +8,12 @@ using ObjectRecognitionLibrary.DataStructures;
 
 namespace ObjectRecognitionLibrary
 {
-    public static class ObjectRecognitionLibrary
+    public class ObjectRecognitionLibrary
     {
         private static readonly object outputLock = new object();
-        public static void AnalyseFolder(string imageFolder, BlockingCollection<ImageData> output, 
+        private Model model = new();
+
+        public void AnalyseFolder(string imageFolder, BlockingCollection<ImageData> output, 
             CancellationToken cancellationToken)
         {
             if (imageFolder.Length > 0)
@@ -20,9 +22,7 @@ namespace ObjectRecognitionLibrary
                     .GetFiles(imageFolder);
 
                 int imagesAmount = imagePaths.Length;
-
-                var model = new Model();
-
+                
                 try
                 {
                     Parallel.ForEach(imagePaths, new ParallelOptions { CancellationToken = cancellationToken }, 
