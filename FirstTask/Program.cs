@@ -10,12 +10,14 @@ namespace FirstTask
 {
     class Program
     {
+        
         static void Main(string[] args)
         {
             CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
             CancellationToken token = cancelTokenSource.Token;
+            ObjectRecognitionLibrary.ObjectRecognitionLibrary objectRecognitionLibrary = new();
 
-            Console.CancelKeyPress += (s, ev) =>
+        Console.CancelKeyPress += (s, ev) =>
             {
                 cancelTokenSource.Cancel();
                 ev.Cancel = true;
@@ -29,7 +31,7 @@ namespace FirstTask
                 float progress = 0;
                 int imagesAmount = Directory.GetFiles(args[0]).Length;
                
-                Task.Factory.StartNew(() => ObjectRecognitionLibrary.ObjectRecognitionLibrary.AnalyseFolder(args[0], results, token), 
+                Task.Factory.StartNew(() => objectRecognitionLibrary.AnalyseFolder(args[0], results, token), 
                     TaskCreationOptions.LongRunning);
                 
                 ImageData imageData;
