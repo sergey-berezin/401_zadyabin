@@ -25,6 +25,9 @@ namespace ThirdTask.Migrations
                     b.Property<byte[]>("Image")
                         .HasColumnType("BLOB");
 
+                    b.Property<string>("ImageHash")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("AnalyzedImageId");
 
                     b.ToTable("AnalyzedImages");

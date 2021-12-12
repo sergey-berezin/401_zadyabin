@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -67,7 +68,7 @@ namespace ThirdTask
             return bitmap;
         }
 
-        public static byte[] BitmasSourceToByteArray(BitmapSource bitmapSource)
+        public static byte[] BitmapSourceToByteArray(BitmapSource bitmapSource)
         {
             JpegBitmapEncoder encoder = new();
             encoder.QualityLevel = 100;
@@ -86,6 +87,14 @@ namespace ThirdTask
         public static BitmapSource ByteArrayToBitmapSource(this byte[] data)
         {
             return BitmapSourceFromBitmap(new Bitmap(new MemoryStream(data)));
+        }
+
+        public static string GetHashSHA1(this byte[] data)
+        {
+            using (var sha1 = new System.Security.Cryptography.SHA1CryptoServiceProvider())
+            {
+                return string.Concat(sha1.ComputeHash(data).Select(x => x.ToString("X2")));
+            }
         }
     }
 }

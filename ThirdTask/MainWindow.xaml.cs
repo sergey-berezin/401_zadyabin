@@ -11,9 +11,6 @@ using ObjectRecognitionLibrary.DataStructures;
 using ObjectRecognitionLibrary;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Proxies;
-using System.Windows.Data;
-
 
 namespace ThirdTask
 {
@@ -38,7 +35,6 @@ namespace ThirdTask
     {
         private ObservableCollection<BitmapSource> _images = new();
         private Dictionary<string, int> ImagePathToIndex = new();
-        private static readonly object lockObject = new object();
 
         CancellationTokenSource cancelTokenSource = new();
         CancellationToken token;
@@ -96,8 +92,6 @@ namespace ThirdTask
 
         private void StartObjectRecognition()
         {
-            
-
             isAnalyzing = true;
             if (imagesFolder.Length > 0)
             {
@@ -107,9 +101,6 @@ namespace ThirdTask
                     TaskCreationOptions.LongRunning);
 
                 Task.Factory.StartNew(() => {
-                    
-
-
                     ImageData imageData;
                     while (!results.IsCompleted)
                     {
@@ -123,12 +114,8 @@ namespace ThirdTask
 
                              Dispatcher.Invoke(() =>
                              {
-
-                            //lock (lockObject)
-                           // {
                                 Images[imageIndex] = image;
-                           // }
-                           });
+                             });
 
                             Collection<BoundingBox> boundingBoxes = new();
 
@@ -147,8 +134,15 @@ namespace ThirdTask
                             }
 
                             var db = new LibraryContext();
-                            db.AnalyzedImages.Add(new AnalyzedImage { Image = Helpers.BitmasSourceToByteArray(image), BoundingBoxes = boundingBoxes });
-                            db.SaveChanges();
+                            byte[] byteArray = Helpers.BitmapSourceToByteArray(image);
+                            var hash = Helpers.GetHashSHA1(byteArray);
+                            var query1 = db.AnalyzedImages.Where(a => a.ImageHash == hash);
+                            var query2 = query1.Where(a => a.Image.SequenceEqual(byteArray));
+                            if (query2.Count() == 0)
+                            {
+                                db.AnalyzedImages.Add(new AnalyzedImage { Image = byteArray, BoundingBoxes = boundingBoxes, ImageHash = hash });
+                                db.SaveChanges();
+                            }
                         }
                     }
                     isAnalyzing = false;
@@ -171,6 +165,11 @@ namespace ThirdTask
             var images = db.AnalyzedImages.Include(e => e.BoundingBoxes).ToList();
             db.AnalyzedImages.RemoveRange(images);
             db.SaveChanges();
+
+            Dispatcher.Invoke(() =>
+            {
+                Images.Clear();
+            });
         }
     }
 }
