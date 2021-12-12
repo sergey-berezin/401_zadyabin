@@ -32,7 +32,7 @@ namespace ThirdTask.Migrations
                     y2 = table.Column<float>(type: "REAL", nullable: false),
                     Label = table.Column<string>(type: "TEXT", nullable: true),
                     Confidence = table.Column<float>(type: "REAL", nullable: false),
-                    AnalyzedImageId = table.Column<int>(type: "INTEGER", nullable: true)
+                    AnalyzedImageId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,7 +42,7 @@ namespace ThirdTask.Migrations
                         column: x => x.AnalyzedImageId,
                         principalTable: "AnalyzedImages",
                         principalColumn: "AnalyzedImageId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

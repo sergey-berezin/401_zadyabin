@@ -1,9 +1,4 @@
-﻿using ObjectRecognitionLibrary.DataStructures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ThirdTask
 {
@@ -24,5 +19,6 @@ namespace ThirdTask
         public string Label { get; set; }
         public float Confidence { get; set; }
 
+        public int AnalyzedImageId { get; set; }
     }
 }

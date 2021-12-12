@@ -47,7 +47,7 @@ namespace ThirdTask
 
         public static BitmapSource BitmapSourceFromBitmap(Bitmap bitmap)
         {
-            return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+            return Imaging.CreateBitmapSourceFromHBitmap(
                           bitmap.GetHbitmap(),
                           IntPtr.Zero,
                           Int32Rect.Empty,
@@ -79,7 +79,13 @@ namespace ThirdTask
                 bit = stream.ToArray();
                 stream.Close();
             }
+            bit.GetHashCode();
             return bit;
+        }
+
+        public static BitmapSource ByteArrayToBitmapSource(this byte[] data)
+        {
+            return BitmapSourceFromBitmap(new Bitmap(new MemoryStream(data)));
         }
     }
 }

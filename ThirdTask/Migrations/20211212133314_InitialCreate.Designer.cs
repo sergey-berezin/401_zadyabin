@@ -9,7 +9,7 @@ using ThirdTask;
 namespace ThirdTask.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20211211170812_InitialCreate")]
+    [Migration("20211212133314_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,7 +38,7 @@ namespace ThirdTask.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("AnalyzedImageId")
+                    b.Property<int>("AnalyzedImageId")
                         .HasColumnType("INTEGER");
 
                     b.Property<float>("Confidence")
@@ -70,7 +70,9 @@ namespace ThirdTask.Migrations
                 {
                     b.HasOne("ThirdTask.AnalyzedImage", null)
                         .WithMany("BoundingBoxes")
-                        .HasForeignKey("AnalyzedImageId");
+                        .HasForeignKey("AnalyzedImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ThirdTask.AnalyzedImage", b =>

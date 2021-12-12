@@ -12,6 +12,7 @@ using ObjectRecognitionLibrary;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Proxies;
+using System.Windows.Data;
 
 
 namespace ThirdTask
@@ -26,7 +27,7 @@ namespace ThirdTask
         {
             string workingDirectory = Environment.CurrentDirectory;
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-            DbPath = System.IO.Path.Join(projectDirectory, "library.db");
+            DbPath = Path.Join(projectDirectory, "library.db");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder o)
@@ -37,6 +38,7 @@ namespace ThirdTask
     {
         private ObservableCollection<BitmapSource> _images = new();
         private Dictionary<string, int> ImagePathToIndex = new();
+        private static readonly object lockObject = new object();
 
         CancellationTokenSource cancelTokenSource = new();
         CancellationToken token;
@@ -48,11 +50,18 @@ namespace ThirdTask
         {
             get { return _images; }
         }
+
+        private void LoadDataFromDatabase()
+        {
+            var db = new LibraryContext();
+            db.AnalyzedImages.ForEachAsync((analyzedImage) => Images.Add(Helpers.ByteArrayToBitmapSource(analyzedImage.Image)));
+        }
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = this;
+            DataContext = this;
             token = cancelTokenSource.Token;
+            LoadDataFromDatabase();
         }
         private void StopAnalyzingButton_Click(object sender, RoutedEventArgs e)
         {
@@ -87,6 +96,8 @@ namespace ThirdTask
 
         private void StartObjectRecognition()
         {
+            
+
             isAnalyzing = true;
             if (imagesFolder.Length > 0)
             {
@@ -96,37 +107,48 @@ namespace ThirdTask
                     TaskCreationOptions.LongRunning);
 
                 Task.Factory.StartNew(() => {
+                    
+
+
                     ImageData imageData;
                     while (!results.IsCompleted)
                     {
                         if (results.TryTake(out imageData))
                         {
                             var imageIndex = ImagePathToIndex[imageData.imagePath];
+                            BitmapSource image;
+                            var newBitmap = ObjectRectangles.Draw(Helpers.BitmapFromBitmapSource(Images[imageIndex]), imageData.boundingBoxes);
+                            image = Helpers.BitmapSourceFromBitmap(newBitmap);
+                            image.Freeze();
 
-                            Dispatcher.Invoke(() =>
+                             Dispatcher.Invoke(() =>
+                             {
+
+                            //lock (lockObject)
+                           // {
+                                Images[imageIndex] = image;
+                           // }
+                           });
+
+                            Collection<BoundingBox> boundingBoxes = new();
+
+                            foreach (var bb in imageData.boundingBoxes)
                             {
-                                var newBitmap = ObjectRectangles.Draw(Helpers.BitmapFromBitmapSource(Images[imageIndex]), imageData.boundingBoxes);
-                                Images[imageIndex] = Helpers.BitmapSourceFromBitmap(newBitmap);
-
-                                Collection<BoundingBox> boundingBoxes = new();
-
-                                foreach(var bb in imageData.boundingBoxes)
+                                boundingBoxes.Add(new BoundingBox
                                 {
-                                    boundingBoxes.Add(new BoundingBox { 
-                                        Label = bb.Label, 
-                                        Confidence = bb.Confidence, 
-                                        x1 = bb.BBox[0],
-                                        y1 = bb.BBox[1],
-                                        x2 = bb.BBox[2],
-                                        y2 = bb.BBox[3],
-                                        
-                                    });
-                                }
-                                    
-                                var db = new LibraryContext();
-                                db.AnalyzedImages.Add(new AnalyzedImage { Image = Helpers.BitmasSourceToByteArray(Images[imageIndex]), BoundingBoxes = boundingBoxes });
-                                db.SaveChanges();
-                            });
+                                    Label = bb.Label,
+                                    Confidence = bb.Confidence,
+                                    x1 = bb.BBox[0],
+                                    y1 = bb.BBox[1],
+                                    x2 = bb.BBox[2],
+                                    y2 = bb.BBox[3],
+
+                                });
+                            }
+
+                            var db = new LibraryContext();
+                            db.AnalyzedImages.Add(new AnalyzedImage { Image = Helpers.BitmasSourceToByteArray(image), BoundingBoxes = boundingBoxes });
+                            db.SaveChanges();
                         }
                     }
                     isAnalyzing = false;
@@ -141,6 +163,14 @@ namespace ThirdTask
             {
                 StartObjectRecognition();
             }
+        }
+
+        private void ClearDatabaseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var db = new LibraryContext();
+            var images = db.AnalyzedImages.Include(e => e.BoundingBoxes).ToList();
+            db.AnalyzedImages.RemoveRange(images);
+            db.SaveChanges();
         }
     }
 }

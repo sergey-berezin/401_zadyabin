@@ -36,7 +36,7 @@ namespace ThirdTask.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("AnalyzedImageId")
+                    b.Property<int>("AnalyzedImageId")
                         .HasColumnType("INTEGER");
 
                     b.Property<float>("Confidence")
@@ -68,7 +68,9 @@ namespace ThirdTask.Migrations
                 {
                     b.HasOne("ThirdTask.AnalyzedImage", null)
                         .WithMany("BoundingBoxes")
-                        .HasForeignKey("AnalyzedImageId");
+                        .HasForeignKey("AnalyzedImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ThirdTask.AnalyzedImage", b =>
