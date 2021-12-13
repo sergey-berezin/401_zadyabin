@@ -22,9 +22,8 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-        <Button x:Name="StartObjectRecognitionButton" Content="Start Object Recognition" HorizontalAlignment="Left" Margin="286,49,0,0" VerticalAlignment="Top" Height="22" Width="151" Click="StartObjectRecognitionButton_Click"/>
-        <Button x:Name="StopAnalyzingButton" Content="Stop analyzing" HorizontalAlignment="Left" Margin="494,51,0,0" VerticalAlignment="Top" Height="20" Width="138" Click="StopAnalyzingButton_Click"/>
-        <TextBlock x:Name="ItemsInDatabase" HorizontalAlignment="Left" Margin="32,87,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="145" Height="22" FontSize="14"><Run Text="Items in database:"/><LineBreak/><Run/></TextBlock>
+        <Button x:Name="StartObjectRecognitionButton" Content="Start Object Recognition" HorizontalAlignment="Left" Margin="302,47,0,0" VerticalAlignment="Top" Height="24" Width="152" Click="StartObjectRecognitionButton_Click"/>
+        <Button x:Name="StopAnalyzingButton" Content="Stop analyzing" HorizontalAlignment="Left" Margin="487,47,0,0" VerticalAlignment="Top" Height="24" Width="141" Click="StopAnalyzingButton_Click"/>
         <Button x:Name="ClearDatabaseButton" Content="Clear database" HorizontalAlignment="Left" Margin="161,87,0,0" VerticalAlignment="Top" Height="24" Width="102" Click="ClearDatabaseButton_Click"/>
 
     </Grid>

@@ -11,26 +11,10 @@ using ObjectRecognitionLibrary.DataStructures;
 using ObjectRecognitionLibrary;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
+using ThirdTask.Database;
 
 namespace ThirdTask
 {
-    class LibraryContext : DbContext
-    {
-        public DbSet<AnalyzedImage> AnalyzedImages { get; set; }
-
-        public string DbPath { get; }
-
-        public LibraryContext()
-        {
-            string workingDirectory = Environment.CurrentDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-            DbPath = Path.Join(projectDirectory, "library.db");
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder o)
-            => o.UseLazyLoadingProxies().UseSqlite($"Data Source={DbPath}");
-    }
-
     public partial class MainWindow : Window
     {
         private ObservableCollection<BitmapSource> _images = new();
@@ -41,7 +25,8 @@ namespace ThirdTask
 
         private bool isAnalyzing = false;
         private ObjectRecognitionLibrary.ObjectRecognitionLibrary objectRecognitionLibrary = new();
-
+        private ImageDatabase db = new();
+        
         public ObservableCollection<BitmapSource> Images
         {
             get { return _images; }
@@ -49,8 +34,7 @@ namespace ThirdTask
 
         private void LoadDataFromDatabase()
         {
-            var db = new LibraryContext();
-            db.AnalyzedImages.ForEachAsync((analyzedImage) => Images.Add(Helpers.ByteArrayToBitmapSource(analyzedImage.Image)));
+            db.LoadImages(Images);
         }
         public MainWindow()
         {
@@ -107,9 +91,8 @@ namespace ThirdTask
                         if (results.TryTake(out imageData))
                         {
                             var imageIndex = ImagePathToIndex[imageData.imagePath];
-                            BitmapSource image;
                             var newBitmap = ObjectRectangles.Draw(Helpers.BitmapFromBitmapSource(Images[imageIndex]), imageData.boundingBoxes);
-                            image = Helpers.BitmapSourceFromBitmap(newBitmap);
+                            BitmapSource image = Helpers.BitmapSourceFromBitmap(newBitmap);
                             image.Freeze();
 
                              Dispatcher.Invoke(() =>
@@ -132,17 +115,7 @@ namespace ThirdTask
 
                                 });
                             }
-
-                            var db = new LibraryContext();
-                            byte[] byteArray = Helpers.BitmapSourceToByteArray(image);
-                            var hash = Helpers.GetHashSHA1(byteArray);
-                            var query1 = db.AnalyzedImages.Where(a => a.ImageHash == hash);
-                            var query2 = query1.Where(a => a.Image.SequenceEqual(byteArray));
-                            if (query2.Count() == 0)
-                            {
-                                db.AnalyzedImages.Add(new AnalyzedImage { Image = byteArray, BoundingBoxes = boundingBoxes, ImageHash = hash });
-                                db.SaveChanges();
-                            }
+                            db.SaveImage(image, boundingBoxes);
                         }
                     }
                     isAnalyzing = false;
@@ -161,10 +134,7 @@ namespace ThirdTask
 
         private void ClearDatabaseButton_Click(object sender, RoutedEventArgs e)
         {
-            var db = new LibraryContext();
-            var images = db.AnalyzedImages.Include(e => e.BoundingBoxes).ToList();
-            db.AnalyzedImages.RemoveRange(images);
-            db.SaveChanges();
+            db.Clear();
 
             Dispatcher.Invoke(() =>
             {
